@@ -18,14 +18,14 @@ int recurStackFunc(int to, int current) {
     }
     // Prove Stack grow downward
     char localA[16];
-    char localB[16];
+    int localB[16];
     printf("recurStackFunc: %d\n", current);
     printf("localA= %p\n", (void *)localA);
     printf("localB= %p\n", (void *)localB);
-    if (localA < localB) {
-        printf("localA < localB which means stack grow downward\n");
+    if ((void *)localA > (void *)localB) {
+        printf("localA > localB which means stack grow downward\n");
     } else {
-        printf("localA > localB which means stack grow upward\n");
+        printf("localA < localB which means stack grow upward\n");
     }
     recurStackFunc(to, current + 1);
     return 0;
