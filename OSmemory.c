@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Global variables
+/* -------------------------------------------------------------------------- */
+/*                              Global variables                              */
+/* -------------------------------------------------------------------------- */
 // Uninitialized global variables
 char globalUninitialized1[20];
 char globalUninitialized2[20];
@@ -11,6 +13,9 @@ char globalInitialized2[20] = "globalInitialized2";
 // Global pointer variables
 char *globalMallocA = NULL;
 
+/* -------------------------------------------------------------------------- */
+/*                                    Stack                                   */
+/* -------------------------------------------------------------------------- */
 int recurStackFunc(int to, int current) {
     printf("------------------------------\n");
     if (to == current) {
@@ -30,7 +35,6 @@ int recurStackFunc(int to, int current) {
     recurStackFunc(to, current + 1);
     return 0;
 }
-
 int isStackGrowDownward() {
     char localA[16];
     int localB[16];
@@ -60,6 +64,7 @@ int testStackGrowDownward(int number) {
     scanf("%d", &option);
     printf("Test stack grow downward: ");
     if (option == 0) {
+        // Test stack grow downward with for loop
         for (int i = 0; i < number; i++) {
             if (!isStackGrowDownward()) {
                 printf("False at %d\n", i);
@@ -70,6 +75,7 @@ int testStackGrowDownward(int number) {
         printf("------------------------------\n");
         return 1;
     } else if (option == 1) {
+        // Test stack grow downward with recursion
         int result = isStackGrowDownwardOverflow(number);
         if (result != number) {
             printf("False at %d\n", result);
@@ -83,7 +89,6 @@ int testStackGrowDownward(int number) {
 }
 
 int TestTimes = 10000000;
-
 void main() {
     // to show address of global variables
     printf("========================================\nGlobal variables\n");
@@ -96,6 +101,7 @@ void main() {
     // globalUninitialized1 or globalUninitialized2
     printf("globalMallocA= %p\n", globalMallocA);
     free(globalMallocA);
+    // To show address of stack variables and prove stack grow downward
     printf("========================================\nStack variables\n");
     recurStackFunc(3, 0);
     testStackGrowDownward(TestTimes);
