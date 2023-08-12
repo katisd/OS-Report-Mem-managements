@@ -31,6 +31,59 @@ int recurStackFunc(int to, int current) {
     return 0;
 }
 
+int isStackGrowDownward() {
+    char localA[16];
+    int localB[16];
+    if ((void *)localA > (void *)localB) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+int isStackGrowDownwardOverflow(int number) {
+    if (number == 0) {
+        return 0;
+    }
+    char localA[16];
+    int localB[16];
+    if ((void *)localA > (void *)localB) {
+        return isStackGrowDownwardOverflow(number - 1) + 1;
+    } else {
+        return 0;
+    }
+}
+int testStackGrowDownward(int number) {
+    int option = 0;
+    printf(
+        "Chose Option for Testing Stack\n(0):not Stack-Overflow\n"
+        "(1):Stack-Overflow :\n");
+    scanf("%d", &option);
+    printf("Test stack grow downward: ");
+    if (option == 0) {
+        for (int i = 0; i < number; i++) {
+            if (!isStackGrowDownward()) {
+                printf("False at %d\n", i);
+                return 0;
+            }
+        }
+        printf("Correct for %d times\n", number);
+        printf("------------------------------\n");
+        return 1;
+    } else if (option == 1) {
+        int result = isStackGrowDownwardOverflow(number);
+        if (result != number) {
+            printf("False at %d\n", result);
+            return 0;
+        } else {
+            printf("Correct for %d times\n", number);
+            printf("------------------------------\n");
+            return 1;
+        }
+    }
+}
+
+int TestTimes = 10000000;
+
 void main() {
     // to show address of global variables
     printf("========================================\nGlobal variables\n");
@@ -45,4 +98,5 @@ void main() {
     free(globalMallocA);
     printf("========================================\nStack variables\n");
     recurStackFunc(3, 0);
+    testStackGrowDownward(TestTimes);
 }
