@@ -87,7 +87,80 @@ int testStackGrowDownward(int number) {
         }
     }
 }
-
+/* -------------------------------------------------------------------------- */
+/*                                    Heap                                    */
+/* -------------------------------------------------------------------------- */
+void recurHeapFunc(int number) {
+    printf("------------------------------\n");
+    if (number == 0) {
+        return;
+    }
+    // Prove Heap grow from low address
+    char *localMallocA = malloc(12 * sizeof(char));
+    int *localMallocB = malloc(12 * sizeof(int));
+    printf("localMallocA= %p\n", localMallocA);
+    printf("localMallocB= %p\n", localMallocB);
+    if ((void *)localMallocA < (void *)localMallocB) {
+        printf("localMallocA < localMallocB which means heap grow upward\n");
+    } else {
+        printf("localMallocA > localMallocB which means heap grow downward\n");
+    }
+    recurHeapFunc(number - 1);
+    free(localMallocA);
+    free(localMallocB);
+}
+int isHeapGrowUpward() {
+    char *localMallocA = malloc(12 * sizeof(char));
+    int *localMallocB = malloc(12 * sizeof(int));
+    if ((void *)localMallocA < (void *)localMallocB) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+int isHeapGrowUpwardOverflow(int number) {
+    if (number == 0) {
+        return 0;
+    }
+    char *localMallocA = malloc(12 * sizeof(char));
+    int *localMallocB = malloc(12 * sizeof(int));
+    if ((void *)localMallocA < (void *)localMallocB) {
+        return isHeapGrowUpwardOverflow(number - 1) + 1;
+    } else {
+        return 0;
+    }
+}
+int testHeapGrowUpward(int number) {
+    int option = 0;
+    printf(
+        "Chose Option for Testing Heap\n(0):not Heap-Overflow\n"
+        "(1):Heap-Overflow :\n");
+    scanf("%d", &option);
+    printf("Test Heap grow Upward: ");
+    if (option == 0) {
+        // Test Heap grow Upward with for loop
+        for (int i = 0; i < number; i++) {
+            if (!isHeapGrowUpward()) {
+                printf("False at %d\n", i);
+                return 0;
+            }
+        }
+        printf("Correct for %d times\n", number);
+        printf("------------------------------\n");
+        return 1;
+    } else if (option == 1) {
+        // Test Heap grow Upward with recursion
+        int result = isHeapGrowUpwardOverflow(number);
+        if (result != number) {
+            printf("False at %d\n", result);
+            return 0;
+        } else {
+            printf("Correct for %d times\n", number);
+            printf("------------------------------\n");
+            return 1;
+        }
+    }
+}
 int TestTimes = 10000000;
 void main() {
     // to show address of global variables
@@ -105,4 +178,8 @@ void main() {
     printf("========================================\nStack variables\n");
     recurStackFunc(3, 0);
     testStackGrowDownward(TestTimes);
+    // To show address of heap variables and prove heap grow upward
+    printf("========================================\nHeap variables\n");
+    recurHeapFunc(3);
+    testHeapGrowUpward(TestTimes);
 }
